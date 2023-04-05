@@ -17,8 +17,6 @@ public class Main {
         int height = 30;
         int snakeSize = 5;
 
-        Color snakeColor = Color.DARK_GRAY;
-
         JFrame frame = new JFrame();
         GridCreator grid = new GridCreator(frame, width, height);
         GridBlocks[][] gridBlocks = grid.getGridBlocks();
@@ -42,15 +40,19 @@ public class Main {
                 int keyCode = e.getKeyCode();
                 switch (keyCode) {
                     case KeyEvent.VK_DOWN:
+                        if (direction == 'U') break;
                         direction = 'D';
                         break;
                     case KeyEvent.VK_UP:
+                        if (direction == 'D') break;
                         direction = 'U';
                         break;
                     case KeyEvent.VK_LEFT:
+                        if (direction == 'R') break;
                         direction = 'L';
                         break;
                     case KeyEvent.VK_RIGHT:
+                        if (direction == 'L') break;
                         direction = 'R';
                         break;
                 }
@@ -68,103 +70,121 @@ public class Main {
         int tailIndex = 0;
         int tailFetcherIndex = 0;
 
+        generateFood(gridBlocks);
+
         while (true) {
 
             if (direction == 'U') {
+                y += height;
 
-                while (true) {
+                if(gridBlocks[y % height][x % width].isOccupied()) break;
 
-                    y += height;
+                if (counter == snakeSize) {
+                    tails[tailFetcherIndex++].free();
+                } else
+                    counter++;
 
-                    if (counter == snakeSize) {
-                        tails[tailFetcherIndex++].free();
-                    } else
-                        counter++;
-
-                    gridBlocks[(y - height) % height][x % width].setBackground(snakeColor);
-                    tails[tailIndex++] = gridBlocks[(y - height) % height][x % width];
-
-                    if ((direction == 'L' || direction == 'R')) {
-                        break;
-                    }
-
-                    Thread.sleep(snakeSpeed);
-
-                    y--;
+                if(gridBlocks[(y - height) % height][x % width].isOccupiedByFood()){
+                    snakeSize++;
+                    generateFood(gridBlocks);
                 }
 
+                gridBlocks[(y - height) % height][x % width].occupy();
+                tails[tailIndex++] = gridBlocks[(y - height) % height][x % width];
+
+                y--;
             }
 
             if (direction == 'D') {
 
-                while (true) {
+                if(gridBlocks[y % height][x % width].isOccupied()) break;
 
-                    if (counter == snakeSize) {
-                        tails[tailFetcherIndex++].free();
-                    } else
-                        counter++;
+                if (counter == snakeSize) {
+                    tails[tailFetcherIndex++].free();
+                } else
+                    counter++;
 
-                    gridBlocks[y % height][x % width].setBackground(snakeColor);
-                    tails[tailIndex++] = gridBlocks[y % height][x % width];
-
-                    if (direction == 'L' || direction == 'R') {
-                        break;
-                    }
-
-                    Thread.sleep(snakeSpeed);
-
-                    y++;
+                if(gridBlocks[y % height][x % width].isOccupiedByFood()){
+                    snakeSize++;
+                    generateFood(gridBlocks);
                 }
 
+                gridBlocks[y % height][x % width].occupy();
+                tails[tailIndex++] = gridBlocks[y % height][x % width];
+
+                y++;
             }
 
             if (direction == 'L') {
+                x += width;
 
-                while (true) {
+                if(gridBlocks[y % height][x % width].isOccupied()) break;
 
-                    x += width;
+                if (counter == snakeSize) {
+                    tails[tailFetcherIndex++].free();
+                } else
+                    counter++;
 
-                    if (counter == snakeSize) {
-                        tails[tailFetcherIndex++].free();
-                    } else
-                        counter++;
-
-                    gridBlocks[y % height][(x - width) % width].setBackground(snakeColor);
-                    tails[tailIndex++] = gridBlocks[y % height][(x - width) % width];
-
-                    if ((direction == 'U' || direction == 'D')) {
-                        break;
-                    }
-
-                    Thread.sleep(snakeSpeed);
-
-                    x--;
+                if(gridBlocks[y % height][(x - width) % width].isOccupiedByFood()){
+                    snakeSize++;
+                    generateFood(gridBlocks);
                 }
+                gridBlocks[y % height][(x - width) % width].occupy();
+                tails[tailIndex++] = gridBlocks[y % height][(x - width) % width];
+
+                x--;
             }
 
             if (direction == 'R') {
 
-                while (true) {
+                if(gridBlocks[y % height][x % width].isOccupied()) break;
 
-                    if (counter == snakeSize) {
-                        tails[tailFetcherIndex++].free();
-                    } else
-                        counter++;
+                if (counter == snakeSize) {
+                    tails[tailFetcherIndex++].free();
+                } else
+                    counter++;
 
-                    gridBlocks[y % height][x % width].setBackground(snakeColor);
-                    tails[tailIndex++] = gridBlocks[y % height][x % width];
-
-                    if (direction == 'U' || direction == 'D') {
-                        break;
-                    }
-
-                    Thread.sleep(snakeSpeed);
-
-                    x++;
+                if(gridBlocks[y % height][x % width].isOccupiedByFood()){
+                    snakeSize++;
+                    generateFood(gridBlocks);
                 }
+                gridBlocks[y % height][x % width].occupy();
+                tails[tailIndex++] = gridBlocks[y % height][x % width];
+
+                x++;
             }
 
+            Thread.sleep(snakeSpeed);
+
         }
+
+        gameOverScreen();
+
+    }
+
+    public static void gameOverScreen() {
+
+        JOptionPane optionPane = new JOptionPane(new JLabel("Game Over", JLabel.CENTER), JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_OPTION, null, new String[]{"OK"});
+        JDialog dialog = optionPane.createDialog("Snake");
+        dialog.setModal(true);
+        dialog.setVisible(true);
+        System.exit(0);
+
+    }
+
+    public static void generateFood(GridBlocks[][] space) {
+        while(true){
+            int x = (int)(Math.random() * space.length);
+            int y = (int)(Math.random() * space[0].length);
+
+            if(!space[y][x].isOccupied()){
+                space[y][x].occupyWithFood();
+                break;
+            }
+        }
+    }
+
+    public void collisionChecker() {
 
     }
 

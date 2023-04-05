@@ -8,6 +8,8 @@ public class GridBlocks extends JLabel {
     boolean occupied = false;
     boolean occupiedByFood = false;
     Color backGroundColor = Color.LIGHT_GRAY;
+    Color snakeColor = Color.DARK_GRAY;
+    ImageIcon foodImage = new ImageIcon("C:\\Users\\bajed\\IdeaProjects\\Snake\\src\\GridComponents\\Food.png");
 
     public GridBlocks(int XLocation, int YLocation) {
 
@@ -19,11 +21,14 @@ public class GridBlocks extends JLabel {
     }
 
     public void occupy() {
+        this.setBackground(snakeColor);
+        this.setIcon(null);
         occupied = true;
     }
 
     public void occupyWithFood() {
         occupiedByFood = true;
+        this.setIcon(foodImage);
     }
 
     public void free() {
