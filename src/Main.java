@@ -2,7 +2,6 @@ import GridComponents.GridBlocks;
 import GridComponents.GridCreator;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -18,13 +17,16 @@ public class Main {
         int snakeSize = 5;
 
         JFrame frame = new JFrame();
+        ImageIcon icon = new ImageIcon("Icon.png");
         GridCreator grid = new GridCreator(frame, width, height);
         GridBlocks[][] gridBlocks = grid.getGridBlocks();
-        GridBlocks[] tails = new GridBlocks[10000];
+        GridBlocks[] tails = new GridBlocks[50000];
 
+        frame.setTitle("Bajed's Big Snake");
+        frame.setIconImage(icon.getImage());
         frame.setSize(645, 668);
-        frame.setLayout(null);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setLayout(null);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
 
@@ -70,6 +72,7 @@ public class Main {
         int tailIndex = 0;
         int tailFetcherIndex = 0;
 
+        grid.enableBarriers();
         generateFood(gridBlocks);
 
         while (true) {
@@ -86,6 +89,7 @@ public class Main {
 
                 if(gridBlocks[(y - height) % height][x % width].isOccupiedByFood()){
                     snakeSize++;
+                    snakeSpeed--;
                     generateFood(gridBlocks);
                 }
 
@@ -106,6 +110,7 @@ public class Main {
 
                 if(gridBlocks[y % height][x % width].isOccupiedByFood()){
                     snakeSize++;
+                    snakeSpeed--;
                     generateFood(gridBlocks);
                 }
 
@@ -127,6 +132,7 @@ public class Main {
 
                 if(gridBlocks[y % height][(x - width) % width].isOccupiedByFood()){
                     snakeSize++;
+                    snakeSpeed--;
                     generateFood(gridBlocks);
                 }
                 gridBlocks[y % height][(x - width) % width].occupy();
@@ -146,6 +152,7 @@ public class Main {
 
                 if(gridBlocks[y % height][x % width].isOccupiedByFood()){
                     snakeSize++;
+                    snakeSpeed--;
                     generateFood(gridBlocks);
                 }
                 gridBlocks[y % height][x % width].occupy();
@@ -182,10 +189,6 @@ public class Main {
                 break;
             }
         }
-    }
-
-    public void collisionChecker() {
-
     }
 
 }

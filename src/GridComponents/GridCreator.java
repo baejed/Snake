@@ -29,6 +29,30 @@ public class GridCreator {
 
     }
 
+    public void enableBarriers() {
+        for (int i = 0; i < gridBlocks.length; i++) {
+            //vertical barriers
+            gridBlocks[i][0].makeBarrier();
+            gridBlocks[i][gridBlocks.length - 1].makeBarrier();
+
+            //horizontal barriers
+            gridBlocks[0][i].makeBarrier();
+            gridBlocks[gridBlocks[0].length - 1][i].makeBarrier();
+        }
+    }
+
+    public void disableBarriers() {
+        for (int i = 0; i < gridBlocks.length; i++) {
+            //vertical barriers
+            gridBlocks[i][0].free();
+            gridBlocks[i][gridBlocks.length - 1].free();
+
+            //horizontal barriers
+            gridBlocks[0][i].free();
+            gridBlocks[gridBlocks[0].length - 1][i].free();
+        }
+    }
+
     public GridBlocks[][] getGridBlocks() {
         return gridBlocks;
     }
