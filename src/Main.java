@@ -9,21 +9,20 @@ import java.awt.event.KeyListener;
 public class Main {
 
     static char direction = 'R';
-    static char snakeSpeed = 500;
+    static char snakeSpeed = 100;
 
     public static void main(String[] args) throws InterruptedException {
 
         int width = 30;
         int height = 30;
         int snakeSize = 5;
-        int[] tailLocation = new int[2];
 
         Color snakeColor = Color.DARK_GRAY;
-        Color backGroundColor = Color.LIGHT_GRAY;
 
         JFrame frame = new JFrame();
         GridCreator grid = new GridCreator(frame, width, height);
         GridBlocks[][] gridBlocks = grid.getGridBlocks();
+        GridBlocks[] tails = new GridBlocks[10000];
 
         frame.setSize(645, 668);
         frame.setLayout(null);
@@ -63,50 +62,29 @@ public class Main {
             }
         });
 
-        int x = width;
-        int y = height;
-        int lastYPosition = 0;
-        int lastXPosition = 0;
-        int counter;
-        int leftoverCount = snakeSize;
+        int x = width + 1;
+        int y = height + 1;
+        int counter = 0;
+        int tailIndex = 0;
+        int tailFetcherIndex = 0;
 
         while (true) {
 
             if (direction == 'U') {
 
-                counter = 0;
-
                 while (true) {
 
                     y += height;
 
-                    if (counter == snakeSize)
-                        try {
-                            gridBlocks[Math.abs((y + height + snakeSize) % height)][x % width].setBackground(backGroundColor);
-                            gridBlocks[Math.abs((y + height + snakeSize) % height)][x % width].free();
-                        } catch (ArrayIndexOutOfBoundsException e) {
-
-                        }
-                    else {
-                        //was going right
-                        if (!gridBlocks[lastYPosition][(x - snakeSize + counter) % width].isOccupiedByFood()) {
-                            gridBlocks[lastYPosition][(x - snakeSize + counter) % width].setBackground(backGroundColor);
-                            gridBlocks[lastYPosition][(x - snakeSize + counter) % width].free();
-                        }
-
-                        //was going left
-                        if (!gridBlocks[lastYPosition][(x + snakeSize - counter) % width].isOccupiedByFood()) {
-                            gridBlocks[lastYPosition][(x + snakeSize - counter) % width].setBackground(backGroundColor);
-                            gridBlocks[lastYPosition][(x + snakeSize - counter) % width].free();
-                        }
-
+                    if (counter == snakeSize) {
+                        tails[tailFetcherIndex++].free();
+                    } else
                         counter++;
-                    }
 
                     gridBlocks[(y - height) % height][x % width].setBackground(snakeColor);
+                    tails[tailIndex++] = gridBlocks[(y - height) % height][x % width];
 
-                    if (direction == 'L' || direction == 'R') {
-                        lastXPosition = x % width;
+                    if ((direction == 'L' || direction == 'R')) {
                         break;
                     }
 
@@ -119,42 +97,17 @@ public class Main {
 
             if (direction == 'D') {
 
-                counter = 0;
-
                 while (true) {
 
-                    x += width;
-
-                    if (counter == snakeSize)
-                        try {
-                            gridBlocks[(y - snakeSize) % height][x % width].setBackground(backGroundColor);
-                            gridBlocks[(y - snakeSize) % height][x % width].free();
-                        } catch (ArrayIndexOutOfBoundsException e) {
-
-                        }
-                    else {
-                        //was going right
-                        if (!gridBlocks[lastYPosition][(x - snakeSize + counter) % width].isOccupiedByFood()) {
-                            gridBlocks[lastYPosition][(x - snakeSize + counter) % width].setBackground(backGroundColor);
-                            gridBlocks[lastYPosition][(x - snakeSize + counter) % width].free();
-                        }
-
-                        //was going left
-                        if (!gridBlocks[lastYPosition][(x + snakeSize - counter) % width].isOccupiedByFood()) {
-                            gridBlocks[lastYPosition][(x + snakeSize - counter) % width].setBackground(backGroundColor);
-                            gridBlocks[lastYPosition][(x + snakeSize - counter) % width].free();
-                        }
-
+                    if (counter == snakeSize) {
+                        tails[tailFetcherIndex++].free();
+                    } else
                         counter++;
-                    }
 
                     gridBlocks[y % height][x % width].setBackground(snakeColor);
+                    tails[tailIndex++] = gridBlocks[y % height][x % width];
 
-                    //leftover count is not yet used
                     if (direction == 'L' || direction == 'R') {
-                        if (counter != snakeSize) leftoverCount = counter;
-                        lastXPosition = x % width;
-                        lastYPosition = x % height;
                         break;
                     }
 
@@ -167,37 +120,19 @@ public class Main {
 
             if (direction == 'L') {
 
-                counter = 0;
-
                 while (true) {
 
-                    if (counter == snakeSize)
-                        try {
-                            gridBlocks[y % height][Math.abs((x + width + snakeSize) % width)].setBackground(backGroundColor);
-                            gridBlocks[y % height][Math.abs((x + width + snakeSize) % width)].free();
-                        } catch (ArrayIndexOutOfBoundsException e) {
+                    x += width;
 
-                        }
-                    else {
-                        //was going down
-                        if (!gridBlocks[(y - snakeSize + counter) % height][lastXPosition].isOccupiedByFood()) {
-                            gridBlocks[(y - snakeSize + counter) % height][lastXPosition].setBackground(backGroundColor);
-                            gridBlocks[(y - snakeSize + counter) % height][lastXPosition].free();
-                        }
-
-                        //was going up
-                        if (!gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].isOccupiedByFood()) {
-                            gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].setBackground(backGroundColor);
-                            gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].free();
-                        }
-
+                    if (counter == snakeSize) {
+                        tails[tailFetcherIndex++].free();
+                    } else
                         counter++;
-                    }
 
                     gridBlocks[y % height][(x - width) % width].setBackground(snakeColor);
+                    tails[tailIndex++] = gridBlocks[y % height][(x - width) % width];
 
-                    if (direction == 'U' || direction == 'D') {
-                        lastYPosition = y % height;
+                    if ((direction == 'U' || direction == 'D')) {
                         break;
                     }
 
@@ -209,37 +144,17 @@ public class Main {
 
             if (direction == 'R') {
 
-                counter = 0;
-
                 while (true) {
 
-                    if (counter == snakeSize)
-                        try {
-                            gridBlocks[y % height][(x - snakeSize) % width].setBackground(backGroundColor);
-                            gridBlocks[y % height][(x - snakeSize) % width].free();
-                        } catch (ArrayIndexOutOfBoundsException e) {
-
-                        }
-                    else {
-                        //was going down
-                        if (!gridBlocks[(y - snakeSize + counter) % height][lastXPosition].isOccupiedByFood()) {
-                            gridBlocks[(y - snakeSize + counter) % height][lastXPosition].setBackground(backGroundColor);
-                            gridBlocks[(y - snakeSize + counter) % height][lastXPosition].free();
-                        }
-
-                        //was going up
-                        if (!gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].isOccupiedByFood()) {
-                            gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].setBackground(backGroundColor);
-                            gridBlocks[Math.abs((y + height + snakeSize - counter) % height)][lastXPosition].free();
-                        }
-
+                    if (counter == snakeSize) {
+                        tails[tailFetcherIndex++].free();
+                    } else
                         counter++;
-                    }
 
                     gridBlocks[y % height][x % width].setBackground(snakeColor);
+                    tails[tailIndex++] = gridBlocks[y % height][x % width];
 
                     if (direction == 'U' || direction == 'D') {
-                        lastYPosition = y % height;
                         break;
                     }
 

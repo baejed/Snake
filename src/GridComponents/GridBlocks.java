@@ -7,6 +7,7 @@ public class GridBlocks extends JLabel {
 
     boolean occupied = false;
     boolean occupiedByFood = false;
+    Color backGroundColor = Color.LIGHT_GRAY;
 
     public GridBlocks(int XLocation, int YLocation) {
 
@@ -26,6 +27,7 @@ public class GridBlocks extends JLabel {
     }
 
     public void free() {
+        this.setBackground(backGroundColor);
         occupied = false;
     }
 
