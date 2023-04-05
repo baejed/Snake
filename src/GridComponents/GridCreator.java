@@ -13,13 +13,13 @@ public class GridCreator {
 
         gridBlocks = new GridBlocks[y][x];
 
+        frame.setVisible(true);
+
         for (int i = 0, yPos = 0; i < gridBlocks.length; i++, yPos += (20 + gap)) {
             for (int j = 0, xPos = 0; j < gridBlocks[i].length; j++, xPos += (20 + gap)) {
                 gridBlocks[i][j] = new GridBlocks(xPos, yPos);
             }
         }
-
-        frame.setVisible(true);
 
         for (int i = 0; i < gridBlocks.length; i++) {
             for (int j = 0; j < gridBlocks[i].length; j++) {
