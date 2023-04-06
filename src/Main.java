@@ -9,6 +9,10 @@ public class Main {
 
     static char direction = 'R';
     static char snakeSpeed = 100;
+    static boolean hasMovedUp = false;
+    static boolean hasMoveDown = false;
+    static boolean hasMovedLeft = false;
+    static boolean hasMovedRight = true;
 
     public static void main(String[] args) throws InterruptedException {
 
@@ -43,19 +47,31 @@ public class Main {
                 switch (keyCode) {
                     case KeyEvent.VK_DOWN:
                         if (direction == 'U') break;
+                        if(!(hasMovedLeft || hasMovedRight)) break;
                         direction = 'D';
+                        hasMovedLeft = false;
+                        hasMovedRight = false;
                         break;
                     case KeyEvent.VK_UP:
                         if (direction == 'D') break;
+                        if(!(hasMovedLeft || hasMovedRight)) break;
                         direction = 'U';
+                        hasMovedLeft = false;
+                        hasMovedRight = false;
                         break;
                     case KeyEvent.VK_LEFT:
                         if (direction == 'R') break;
+                        if (!(hasMovedUp || hasMoveDown)) break;
                         direction = 'L';
+                        hasMovedUp = false;
+                        hasMoveDown = false;
                         break;
                     case KeyEvent.VK_RIGHT:
                         if (direction == 'L') break;
+                        if (!(hasMovedUp || hasMoveDown)) break;
                         direction = 'R';
+                        hasMovedUp = false;
+                        hasMoveDown = false;
                         break;
                 }
             }
@@ -80,14 +96,14 @@ public class Main {
             if (direction == 'U') {
                 y += height;
 
-                if(gridBlocks[y % height][x % width].isOccupied()) break;
+                if (gridBlocks[y % height][x % width].isOccupied()) break;
 
                 if (counter == snakeSize) {
                     tails[tailFetcherIndex++].free();
                 } else
                     counter++;
 
-                if(gridBlocks[(y - height) % height][x % width].isOccupiedByFood()){
+                if (gridBlocks[(y - height) % height][x % width].isOccupiedByFood()) {
                     snakeSize++;
                     snakeSpeed--;
                     generateFood(gridBlocks);
@@ -97,18 +113,19 @@ public class Main {
                 tails[tailIndex++] = gridBlocks[(y - height) % height][x % width];
 
                 y--;
+                hasMovedUp = true;
             }
 
             if (direction == 'D') {
 
-                if(gridBlocks[y % height][x % width].isOccupied()) break;
+                if (gridBlocks[y % height][x % width].isOccupied()) break;
 
                 if (counter == snakeSize) {
                     tails[tailFetcherIndex++].free();
                 } else
                     counter++;
 
-                if(gridBlocks[y % height][x % width].isOccupiedByFood()){
+                if (gridBlocks[y % height][x % width].isOccupiedByFood()) {
                     snakeSize++;
                     snakeSpeed--;
                     generateFood(gridBlocks);
@@ -118,19 +135,20 @@ public class Main {
                 tails[tailIndex++] = gridBlocks[y % height][x % width];
 
                 y++;
+                hasMoveDown = true;
             }
 
             if (direction == 'L') {
                 x += width;
 
-                if(gridBlocks[y % height][x % width].isOccupied()) break;
+                if (gridBlocks[y % height][x % width].isOccupied()) break;
 
                 if (counter == snakeSize) {
                     tails[tailFetcherIndex++].free();
                 } else
                     counter++;
 
-                if(gridBlocks[y % height][(x - width) % width].isOccupiedByFood()){
+                if (gridBlocks[y % height][(x - width) % width].isOccupiedByFood()) {
                     snakeSize++;
                     snakeSpeed--;
                     generateFood(gridBlocks);
@@ -139,18 +157,19 @@ public class Main {
                 tails[tailIndex++] = gridBlocks[y % height][(x - width) % width];
 
                 x--;
+                hasMovedLeft = true;
             }
 
             if (direction == 'R') {
 
-                if(gridBlocks[y % height][x % width].isOccupied()) break;
+                if (gridBlocks[y % height][x % width].isOccupied()) break;
 
                 if (counter == snakeSize) {
                     tails[tailFetcherIndex++].free();
                 } else
                     counter++;
 
-                if(gridBlocks[y % height][x % width].isOccupiedByFood()){
+                if (gridBlocks[y % height][x % width].isOccupiedByFood()) {
                     snakeSize++;
                     snakeSpeed--;
                     generateFood(gridBlocks);
@@ -159,10 +178,10 @@ public class Main {
                 tails[tailIndex++] = gridBlocks[y % height][x % width];
 
                 x++;
+                hasMovedRight = true;
             }
 
             Thread.sleep(snakeSpeed);
-
         }
 
         gameOverScreen();
@@ -180,11 +199,11 @@ public class Main {
     }
 
     public static void generateFood(GridBlocks[][] space) {
-        while(true){
-            int x = (int)(Math.random() * space.length);
-            int y = (int)(Math.random() * space[0].length);
+        while (true) {
+            int x = (int) (Math.random() * space.length);
+            int y = (int) (Math.random() * space[0].length);
 
-            if(!space[y][x].isOccupied()){
+            if (!space[y][x].isOccupied()) {
                 space[y][x].occupyWithFood();
                 break;
             }
