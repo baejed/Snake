@@ -12,7 +12,7 @@ public class Main {
     static boolean hasMovedUp = false;
     static boolean hasMoveDown = false;
     static boolean hasMovedLeft = false;
-    static boolean hasMovedRight = true;
+    static boolean hasMovedRight = false;
 
     public static void main(String[] args) throws InterruptedException {
 
