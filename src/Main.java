@@ -153,6 +153,7 @@ public class Main {
                     snakeSpeed--;
                     generateFood(gridBlocks);
                 }
+
                 gridBlocks[y % height][(x - width) % width].occupy();
                 tails[tailIndex++] = gridBlocks[y % height][(x - width) % width];
 
@@ -203,7 +204,7 @@ public class Main {
             int x = (int) (Math.random() * space.length);
             int y = (int) (Math.random() * space[0].length);
 
-            if (!space[y][x].isOccupied()) {
+            if (!space[y][x].isOccupied() || !space[y][x].isOccupiedByFood()) {
                 space[y][x].occupyWithFood();
                 break;
             }
