@@ -204,7 +204,7 @@ public class Main {
             int x = (int) (Math.random() * space.length);
             int y = (int) (Math.random() * space[0].length);
 
-            if (!space[y][x].isOccupied() || !space[y][x].isOccupiedByFood()) {
+            if (!space[y][x].isOccupied() && !space[y][x].isOccupiedByFood()) {
                 space[y][x].occupyWithFood();
                 break;
             }
